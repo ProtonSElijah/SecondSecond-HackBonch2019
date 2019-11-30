@@ -2,16 +2,14 @@
     max-width: 100vmax;
 }
 
-.Options {
-    height: 22vmax;
-    width: 100vmin;
-    background: pink;
+body {
+    overflow-y: hidden;
 }
 
 .ProductList {
-    height: 72.583814406vmax;
+    height: 86.583814406vmax;
     width: 100vmin;
-    background: blue;
+   /* background: blue;*/
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -20,7 +18,27 @@
 
 .ProductCell {
     width: 48vmin;
-    height: 50vmin;
-    background: yellow;
+    height: 60vmin;
+  /*  background: yellow;*/
     margin: 1vmin;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ProductCell img {
+    margin-top: 1.5vmin;
+    width: 45vmin;
+    height: 45vmin;
+    background: red;
+    object-fit: cover;
+}
+
+.ProdPrice {
+    margin-top: 1.5vmin;
+    color: #7ab02a;
+}
+
+.ProdName {
+    margin-top: 1.5vmin;
 }

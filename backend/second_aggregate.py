@@ -52,7 +52,7 @@ for item in resp["items"]:
             continue # чтобы избежать слишком большого уровня вложенности использую continue для обратного условия
         sn =  line.named['size'] # size name
         item_size = sizes_string_to_7_array(sn)
-        item_result['size'] == item_size
+        item_result['size'] = item_size
     item_result['description'] = desc
     item_result['name'] = item['title']
     item_result['price'] = int(item['price']['amount']) / 100
@@ -81,7 +81,7 @@ for item_got in items_got:
         "price": int(item_got["price"]["amount"]) / 100,
         "photo_url": item_got["thumb_photo"],
         "size": sizes_string_to_7_array(size.named['size']),
-        "url": "https://vk.com/market{shop}?w=product{shop}_{item}".format(**{"shop": romashkino_id, "item": item['id']} )
+        "url": "https://vk.com/market{shop}?w=product{shop}_{item}".format(**{"shop": kostrov_id, "item": item['id']} )
     })
 
 OUR_URL = "http://192.168.43.76:8080/" # uploading to our server

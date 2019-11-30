@@ -1,0 +1,26 @@
+.main {
+    max-width: 100vmax;
+}
+
+.Options {
+    height: 22vmax;
+    width: 100vmin;
+    background: pink;
+}
+
+.ProductList {
+    height: 72.583814406vmax;
+    width: 100vmin;
+    background: blue;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-y: scroll;
+}
+
+.ProductCell {
+    width: 48vmin;
+    height: 50vmin;
+    background: yellow;
+    margin: 1vmin;
+}

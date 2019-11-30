@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import connect from '@vkontakte/vk-connect';
 import View from '@vkontakte/vkui/dist/components/View/View';
 
-import Home from './panels/Home';
+import Main from './panels/Main';
 
 import '@vkontakte/vkui/dist/vkui.css';
+import './panels/Main.css';
 
 const AppSecondSecond = () => {
-    const [activePanel, setActivePanel] = useState('home');
+    const [activePanel, setActivePanel] = useState('main');
 
     useEffect(() => {
         connect.subscribe(({ detail: { type, data }}) => {
@@ -30,7 +31,7 @@ const AppSecondSecond = () => {
 
     return (
         <View activePanel={activePanel}>
-            <Home id='home'/>
+            <Main id='main'/>
         </View>
     );
 }

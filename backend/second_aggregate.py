@@ -58,6 +58,7 @@ for item in resp["items"]:
     item_result['price'] = int(item['price']['amount']) / 100
     item_result['img'] = item['thumb_photo']
     item_result['url'] = 'https://vk.com/market{shop}?w=product{shop}_{item}'.format(**{"shop": romashkino_id, "item": item['id']} )
+    item_result['shop'] = 'РОМАШКИНО'
     items.append(item_result)
 
 kostrov_id = -15804918
@@ -69,7 +70,6 @@ while items_processed < items_total:
     items_processed += 200
     items_total = resp_kostrov['count'] # это каждый раз одно и то же значение, но нам важно, чтобы на первой итерации произошло изменение
     items_got.extend(resp_kostrov['items']) 
-items = list()
 sizes_kostrov = dict()
 for item_got in items_got:
     size = parse.parse("{}размер{:s}{size}", item_got['title'])
@@ -79,23 +79,20 @@ for item_got in items_got:
         "description": item_got["description"],
         "name": item_got["title"],
         "price": int(item_got["price"]["amount"]) / 100,
-        "photo_url": item_got["thumb_photo"],
+        "img": item_got["thumb_photo"],
         "size": sizes_string_to_7_array(size.named['size']),
+        "shop": "Костров",
         "url": "https://vk.com/market{shop}?w=product{shop}_{item}".format(**{"shop": kostrov_id, "item": item['id']} )
     })
 
 OUR_URL = "http://192.168.43.76:8080/" # uploading to our server
-# only first eight
-i = 0
+print("reached sending")
+print(len(items))
+import sys
+sys.exit()
 for item in items:
-    i += 1
-    if i<8:
-        continue
     r = requests.post(OUR_URL + "items",
                       json = item,
                       headers = {
                         'Content-Type': 'application/json'
                         })
-    if i > 8:
-        pass
-        #break

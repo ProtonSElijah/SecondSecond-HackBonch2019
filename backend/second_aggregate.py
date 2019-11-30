@@ -17,6 +17,27 @@ def call_api(method, data = {}, json=True): # helper for vk api
         return r.json()["response"]
     return r
 
+def sizes_string_to_7_array(s): # [XXS, XS, S, M, L, XL, XXL]
+    a = [0] * 7
+    s = s.strip().replace("М", "M").replace("Х", "X") # кириллица
+    ss = filter(None, re.split("[^\w-]", s))
+    for potential_size in ss:
+        if not re.match("^[XSML]+$", potential_size):
+            #print("No: " + potential_size)
+            continue
+        #print("Yes: " + potential_size)
+        sna = potential_size.split('-')
+        if len(sna) == 2: # если есть дефис
+            size_start = sizes.index(sna[0])
+            size_end = sizes.index(sna[1])
+            if size_end < size_start:
+                size_start, size_end = size_end, size_start
+            for i in range(size_start, size_end + 1):
+                a[i] = 1
+        if len(sna) == 1: # если его нет
+            a[sizes.index(potential_size)] = 1
+    return a
+
 romashkino_id = -165202670 
 resp = call_api("market.get", {"owner_id": romashkino_id, "count": 200}, json=True)
 sizes = ["XXS", "XS", "S", "M", "L", "XL", "XXL"] # возможные размеры
@@ -28,25 +49,10 @@ for item in resp["items"]:
     item_size = [0] * 7
     for line in parse_gen:
         if line is None:
-            continue # чтобы избежать слишком большого уровня вложенности
-        sn1 =  line.named['size'] # size name
-        sn = re.sub('[^XSMLМХ-]', '', sn1).replace('М', 'M').replace('Х', 'X') # избавляемся от кириллицы
-        sna = sn.split('-') # array of sizes
-        if sn == '':
-            continue
-        #for size in sizes:
-        #    item_result["size_" + size] = 0
-        if len(sna) == 2:
-            size_start = sizes.index(sna[0])
-            size_end = sizes.index(sna[1])
-            if size_end < size_start:
-                size_start, size_end = size_end, size_start
-            for size in range(size_start, size_end + 1):
-                #item_result["size_" + sizes[size]] = 1
-                item_size[size] = 1
-        if len(sna) == 1:
-            item_size[sizes.index(sn)] = 1
-        item_result['size'] = item_size
+            continue # чтобы избежать слишком большого уровня вложенности использую continue для обратного условия
+        sn =  line.named['size'] # size name
+        item_size = sizes_string_to_7_array(sn)
+        item_result['size'] == item_size
     item_result['description'] = desc
     item_result['name'] = item['title']
     item_result['price'] = int(item['price']['amount']) / 100
@@ -54,7 +60,29 @@ for item in resp["items"]:
     item_result['url'] = 'https://vk.com/market{shop}?w=product{shop}_{item}'.format(**{"shop": romashkino_id, "item": item['id']} )
     items.append(item_result)
 
-
+kostrov_id = -15804918
+items_got = list()
+items_total = 400 # любое значение, которое больше 200
+items_processed = 0
+while items_processed < items_total:
+    resp_kostrov = call_api("market.get", {"owner_id": kostrov_id, "count": 200, "offset": items_processed})
+    items_processed += 200
+    items_total = resp_kostrov['count'] # это каждый раз одно и то же значение, но нам важно, чтобы на первой итерации произошло изменение
+    items_got.extend(resp_kostrov['items']) 
+items = list()
+sizes_kostrov = dict()
+for item_got in items_got:
+    size = parse.parse("{}размер{:s}{size}", item_got['title'])
+    if size is None:
+        continue
+    items.append({
+        "description": item_got["description"],
+        "name": item_got["title"],
+        "price": int(item_got["price"]["amount"]) / 100,
+        "photo_url": item_got["thumb_photo"],
+        "size": sizes_string_to_7_array(size.named['size']),
+        "url": "https://vk.com/market{shop}?w=product{shop}_{item}".format(**{"shop": romashkino_id, "item": item['id']} )
+    })
 
 OUR_URL = "http://192.168.43.76:8080/" # uploading to our server
 # only first eight

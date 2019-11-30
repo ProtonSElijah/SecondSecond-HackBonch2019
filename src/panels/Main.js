@@ -5,9 +5,7 @@ import Search from '@vkontakte/vkui/dist/components/Search/Search';
 import HeaderButton from '@vkontakte/vkui/dist/components/HeaderButton/HeaderButton';
 import Icon24Search from '@vkontakte/icons/dist/24/search';
 
-import ProductCell from '../Components/ProductCell';
-
-const Main = ({id}) => {
+const Main = ({id, openModal}) => {
     const [searchValue, setSearchValue] = useState("Введите");
     const [dataProducts, setDataProducts] = useState(null);
 
@@ -31,33 +29,22 @@ const Main = ({id}) => {
 
     return (
         <Panel id={id}>
-
-
-<PanelHeader
-  left={<HeaderButton><Icon24Search/></HeaderButton>}
-/>
-<Search value={searchValue} onChange={RefreshSearch}/>
+            <PanelHeader
+              left={<HeaderButton onClick={openModal}><Icon24Search/></HeaderButton>}
+            />
+            <Search value={searchValue} onChange={RefreshSearch}/>
             <div id="ProductList" className="ProductList">
                 {dataProducts &&
-                    <ProductList data={dataProducts} />}
-               <ProductCell name="Свитер" img="https://sun9-34.userapi.com/c857632/v857632625/10d2de/LxNWQk6Fy6k.jpg" price="Цена"/>
-               <ProductCell name="Свитер" img="https://sun9-34.userapi.com/c857632/v857632625/10d2de/LxNWQk6Fy6k.jpg" price="Цена"/>
-               <ProductCell name="Свитер" img="https://sun9-34.userapi.com/c857632/v857632625/10d2de/LxNWQk6Fy6k.jpg" price="Цена"/>
-               <ProductCell name="Свитер" img="https://sun9-34.userapi.com/c857632/v857632625/10d2de/LxNWQk6Fy6k.jpg" price="Цена"/>
-               <ProductCell name="Свитер" img="https://sun9-34.userapi.com/c857632/v857632625/10d2de/LxNWQk6Fy6k.jpg" price="Цена"/>
-               <ProductCell name="Свитер" img="https://sun9-34.userapi.com/c857632/v857632625/10d2de/LxNWQk6Fy6k.jpg" price="Цена"/>
-               <ProductCell name="Свитер" img="https://sun9-34.userapi.com/c857632/v857632625/10d2de/LxNWQk6Fy6k.jpg" price="Цена"/>
-               <ProductCell name="Свитер" img="https://sun9-34.userapi.com/c857632/v857632625/10d2de/LxNWQk6Fy6k.jpg" price="Цена"/>
+                    <ProductList data={dataProducts} openModal={openModal}/>}
             </div>
-
         </Panel>
     );
 };
 
-const ProductList = ({data}) => {
+const ProductList = ({data, openModal}) => {
     return data.map (
         product =>
-            <div className="ProductCell">
+            <div className="ProductCell" onClick={openModal}>
                 <img src={product.img ? product.img : null}/>
                 <div className="ProdName">{product.name ? product.name : ""}</div>
                 <div className="ProdPrice">{product.price ? product.price : ""}</div>

@@ -5,27 +5,12 @@ import Search from '@vkontakte/vkui/dist/components/Search/Search';
 import HeaderButton from '@vkontakte/vkui/dist/components/HeaderButton/HeaderButton';
 import Icon24Search from '@vkontakte/icons/dist/24/search';
 
-const Main = ({id, openModal}) => {
+const Main = ({id, openModal, dataProducts}) => {
     const [searchValue, setSearchValue] = useState("Введите");
-    const [dataProducts, setDataProducts] = useState(null);
 
     const RefreshSearch = e => {
         setSearchValue(e.replace(/\s+/g,' '));
     };
-
-    useEffect(() => {
-        function serverRequest() {
-            return fetch("http://192.168.43.76:8080/items", {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            })
-            .then(response => response.json())
-            .then(data => setDataProducts(data));
-        }
-      serverRequest();
-    }, []);
 
     return (
         <Panel id={id}>
@@ -44,10 +29,17 @@ const Main = ({id, openModal}) => {
 const ProductList = ({data, openModal}) => {
     return data.map (
         product =>
-            <div className="ProductCell" onClick={openModal}>
+            <div className="ProductCell"
+               onClick={openModal}
+               data-name={product.name}
+               data-price={product.price}
+               data-img={product.img}
+               data-url={product.url}
+               data-store={product.shop}
+               data-description={product.description}>
                 <img src={product.img ? product.img : null}/>
                 <div className="ProdName">{product.name ? product.name : ""}</div>
-                <div className="ProdPrice">{product.price ? product.price : ""}</div>
+                <div className="ProdPrice">{product.price ? (product.price + " руб.") : ""}</div>
             </div>
     );
 }

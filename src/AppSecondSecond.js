@@ -20,14 +20,49 @@ import './panels/Main.css';
 const AppSecondSecond = () => {
     const [activePanel, setActivePanel] = useState('main');
     const [activeModal, setActiveModal] = useState(null);
+    const [nameProductModal, setNameProductModal] = useState(null);
+    const [priceProductModal, setPriceProductModal] = useState(null);
+    const [imgProductModal, setImgProductModal] = useState(null);
+    const [descriptionProductModal, setDescriptionProductModal] = useState(null);
+    const [storeProductModal, setStoreProductModal] = useState(null);
+    const [urlProductModal, setUrlProductModal] = useState(null);
+
+    const [dataProducts, setDataProducts] = useState(null);
 
     const MODAL_PAGE_PRODUCTINFO = "product-info";
+
+    useEffect(() => {
+        connect.subscribe(({ detail: { type, data }}) => {
+            if (type === 'VKWebAppUpdateConfig') {
+                const schemeAttribute = document.createAttribute('scheme');
+                schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
+                document.body.attributes.setNamedItem(schemeAttribute);
+            }
+        });
+        function serverRequest() {
+            return fetch("http://192.168.43.76:8080/items", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            })
+            .then(response => response.json())
+            .then(data => setDataProducts(data));
+        }
+        serverRequest();
+    }, []);
 
     const modalBack = () => {
         setActiveModal(null);
     };
 
     const openModal = e => {
+        setNameProductModal(e.currentTarget.dataset.name);
+        setPriceProductModal(e.currentTarget.dataset.price);
+        setImgProductModal(e.currentTarget.dataset.img);
+        setDescriptionProductModal(e.currentTarget.dataset.description);
+        setUrlProductModal(e.currentTarget.dataset.url);
+        setStoreProductModal(e.currentTarget.dataset.store);
         setActiveModal(MODAL_PAGE_PRODUCTINFO);
     };
 
@@ -40,34 +75,29 @@ const AppSecondSecond = () => {
               left={IS_PLATFORM_ANDROID && <HeaderButton onClick={modalBack}><Icon24Cancel /></HeaderButton>}
               right={IS_PLATFORM_IOS && <HeaderButton onClick={modalBack}><Icon24Dismiss /></HeaderButton>}
             >
-              Выберите страну
+              {nameProductModal ? nameProductModal : ""}
             </ModalPageHeader>
           }
           onClose={modalBack}
-          settlingHeight={80}
+          settlingHeight={300}
         >
+         <div className="ModalProduct">
+            <img src={imgProductModal}/>
+            <div className="ModalProductDescription">
+                {descriptionProductModal}
+            </div>
+            <div className="ModalStore">
+                {storeProductModal}
+            </div>
+         </div>
+
           <FormLayout>
-
-            <FormLayoutGroup>
-              <Button level="secondary" size="xl">Выбор страны</Button>
-              <Button level="secondary" size="xl">Просмотры истории</Button>
-              <Button level="secondary" size="xl">Информация о пользователе</Button>
-            </FormLayoutGroup>
-
+              <Button level="secondary" size="xl" >{priceProductModal ? ("Купить за " + priceProductModal) : ""}</Button>
           </FormLayout>
+
         </ModalPage>
       </ModalRoot>
     );
-
-    useEffect(() => {
-        connect.subscribe(({ detail: { type, data }}) => {
-            if (type === 'VKWebAppUpdateConfig') {
-                const schemeAttribute = document.createAttribute('scheme');
-                schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
-                document.body.attributes.setNamedItem(schemeAttribute);
-            }
-        });
-    }, []);
 
     const go = e => {
         setActivePanel(e.currentTarget.dataset.to);
@@ -75,7 +105,7 @@ const AppSecondSecond = () => {
 
     return (
         <View activePanel={activePanel} modal={modal}>
-            <Main id='main' openModal={openModal}/>
+            <Main id='main' openModal={openModal} dataProducts={dataProducts}/>
         </View>
     );
 }

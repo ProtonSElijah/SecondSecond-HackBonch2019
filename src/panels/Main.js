@@ -3,9 +3,9 @@ import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import Search from '@vkontakte/vkui/dist/components/Search/Search';
 import HeaderButton from '@vkontakte/vkui/dist/components/HeaderButton/HeaderButton';
-import Icon24Search from '@vkontakte/icons/dist/24/search';
+import Icon24Filter from '@vkontakte/icons/dist/24/filter';
 
-const Main = ({id, openModal, dataProducts}) => {
+const Main = ({id, openModal, dataProducts, openFilter}) => {
     const [searchValue, setSearchValue] = useState("Введите");
 
     const RefreshSearch = e => {
@@ -15,7 +15,7 @@ const Main = ({id, openModal, dataProducts}) => {
     return (
         <Panel id={id}>
             <PanelHeader
-              left={<HeaderButton onClick={openModal}><Icon24Search/></HeaderButton>}
+              left={<HeaderButton onClick={openFilter}><Icon24Filter/></HeaderButton>}
             />
             <Search value={searchValue} onChange={RefreshSearch}/>
             <div id="ProductList" className="ProductList">

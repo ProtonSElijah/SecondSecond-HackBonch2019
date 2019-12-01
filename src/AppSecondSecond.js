@@ -9,8 +9,10 @@ import HeaderButton from '@vkontakte/vkui/dist/components/HeaderButton/HeaderBut
 import FormLayout from '@vkontakte/vkui/dist/components/FormLayout/FormLayout';
 import FormLayoutGroup from '@vkontakte/vkui/dist/components/FormLayoutGroup/FormLayoutGroup';
 import Button from '@vkontakte/vkui/dist/components/Button/Button';
+import RangeSlider from '@vkontakte/vkui/dist/components/RangeSlider/RangeSlider';
 import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
 import Icon24Dismiss from '@vkontakte/icons/dist/24/dismiss';
+import Icon24Done from '@vkontakte/icons/dist/24/dismiss';
 
 import Main from './panels/Main';
 
@@ -20,6 +22,7 @@ import './panels/Main.css';
 const AppSecondSecond = () => {
     const [activePanel, setActivePanel] = useState('main');
     const [activeModal, setActiveModal] = useState(null);
+
     const [nameProductModal, setNameProductModal] = useState(null);
     const [priceProductModal, setPriceProductModal] = useState(null);
     const [imgProductModal, setImgProductModal] = useState(null);
@@ -29,7 +32,11 @@ const AppSecondSecond = () => {
 
     const [dataProducts, setDataProducts] = useState(null);
 
+    const [minPriceChange, setMinPriceChange] = useState(0);
+    const [maxPriceChange, setMaxPriceChange] = useState(12000);
+
     const MODAL_PAGE_PRODUCTINFO = "product-info";
+    const MODAL_PAGE_FILTER = "filter";
 
     useEffect(() => {
         connect.subscribe(({ detail: { type, data }}) => {
@@ -40,7 +47,7 @@ const AppSecondSecond = () => {
             }
         });
         function serverRequest() {
-            return fetch("http://192.168.43.76:8080/items", {
+            return fetch("https://192.168.43.76:8080/items", {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
@@ -56,6 +63,15 @@ const AppSecondSecond = () => {
         setActiveModal(null);
     };
 
+    const openFilter = () => {
+        setActiveModal(MODAL_PAGE_FILTER);
+    };
+
+    const onChangePrice = e => {
+        setMinPriceChange(e[0]);
+        setMaxPriceChange(e[1])
+    };
+
     const openModal = e => {
         setNameProductModal(e.currentTarget.dataset.name);
         setPriceProductModal(e.currentTarget.dataset.price);
@@ -69,7 +85,7 @@ const AppSecondSecond = () => {
     const modal = (
       <ModalRoot activeModal={activeModal}>
         <ModalPage
-          id={"product-info"}
+          id={MODAL_PAGE_PRODUCTINFO}
           header={
             <ModalPageHeader
               left={IS_PLATFORM_ANDROID && <HeaderButton onClick={modalBack}><Icon24Cancel /></HeaderButton>}
@@ -92,7 +108,33 @@ const AppSecondSecond = () => {
          </div>
 
           <FormLayout>
-              <Button level="secondary" size="xl" >{priceProductModal ? ("Купить за " + priceProductModal) : ""}</Button>
+            <Button level="secondary" size="xl" >{priceProductModal ? ("Купить за " + priceProductModal) : ""}</Button>
+          </FormLayout>
+
+        </ModalPage>
+
+
+        <ModalPage
+          id={MODAL_PAGE_FILTER}
+          header={
+            <ModalPageHeader
+              left={IS_PLATFORM_ANDROID && <HeaderButton onClick={modalBack}><Icon24Cancel /></HeaderButton>}
+              right={<HeaderButton onClick={modalBack}>{IS_PLATFORM_IOS ? 'Готово' : <Icon24Done />}</HeaderButton>}>
+              Критерии поиска
+            </ModalPageHeader>
+          }
+          onClose={modalBack}
+          settlingHeight={300}
+        >
+
+          <FormLayout>
+            <RangeSlider onChange={onChangePrice}
+                top={"Ценовой диапазон: " + minPriceChange + " - " + maxPriceChange}
+                min={minPriceChange}
+                max={maxPriceChange}
+                step={1}
+                defaultValue={[0, 12000]}
+              />
           </FormLayout>
 
         </ModalPage>
@@ -105,7 +147,7 @@ const AppSecondSecond = () => {
 
     return (
         <View activePanel={activePanel} modal={modal}>
-            <Main id='main' openModal={openModal} dataProducts={dataProducts}/>
+            <Main id='main' openModal={openModal} dataProducts={dataProducts} openFilter={openFilter}/>
         </View>
     );
 }

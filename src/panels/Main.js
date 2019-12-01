@@ -4,7 +4,7 @@ import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader
 import Search from '@vkontakte/vkui/dist/components/Search/Search';
 import HeaderButton from '@vkontakte/vkui/dist/components/HeaderButton/HeaderButton';
 import Icon24Filter from '@vkontakte/icons/dist/24/filter';
-
+/**/
 const Main = ({id, openModal, dataProducts, openFilter}) => {
     const [searchValue, setSearchValue] = useState("Введите");
 

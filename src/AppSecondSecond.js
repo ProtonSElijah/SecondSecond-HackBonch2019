@@ -9,6 +9,8 @@ import HeaderButton from '@vkontakte/vkui/dist/components/HeaderButton/HeaderBut
 import FormLayout from '@vkontakte/vkui/dist/components/FormLayout/FormLayout';
 import FormLayoutGroup from '@vkontakte/vkui/dist/components/FormLayoutGroup/FormLayoutGroup';
 import Button from '@vkontakte/vkui/dist/components/Button/Button';
+import Link from '@vkontakte/vkui/dist/components/Link/Link';
+import Checkbox from '@vkontakte/vkui/dist/components/Checkbox/Checkbox';
 import RangeSlider from '@vkontakte/vkui/dist/components/RangeSlider/RangeSlider';
 import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
 import Icon24Dismiss from '@vkontakte/icons/dist/24/dismiss';
@@ -108,7 +110,10 @@ const AppSecondSecond = () => {
          </div>
 
           <FormLayout>
-            <Button level="secondary" size="xl" >{priceProductModal ? ("Купить за " + priceProductModal) : ""}</Button>
+            <Button level="secondary" size="xl"
+            component="a" href={urlProductModal}
+            >
+            {priceProductModal ? ("Купить за " + priceProductModal) : ""}</Button>
           </FormLayout>
 
         </ModalPage>
@@ -135,6 +140,17 @@ const AppSecondSecond = () => {
                 step={1}
                 defaultValue={[0, 12000]}
               />
+              <div className="sizeCheckbox">
+                  <Checkbox>XXS</Checkbox>
+                  <Checkbox>XS</Checkbox>
+                  <Checkbox>S</Checkbox>
+                  <Checkbox>M</Checkbox>
+              </div>
+                <div className="sizeCheckbox">
+                  <Checkbox>L</Checkbox>
+                  <Checkbox>XL</Checkbox>
+                  <Checkbox>XXL</Checkbox>
+              </div>
           </FormLayout>
 
         </ModalPage>

@@ -82,7 +82,7 @@ for item_got in items_got:
         "img": item_got["thumb_photo"],
         "size": sizes_string_to_7_array(size.named['size']),
         "shop": "Костров",
-        "url": "https://m.vk.com/product{shop}_{item}".format(**{"shop": kostrov_id, "item": item['id']} )
+        "url": "https://m.vk.com/product{shop}_{item}".format(**{"shop": kostrov_id, "item": item_got['id']} )
     })
 
 OUR_URL = "http://192.168.43.76:8080/" # uploading to our server

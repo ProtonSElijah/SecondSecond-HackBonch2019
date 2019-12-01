@@ -53,11 +53,11 @@ for item in resp["items"]:
         sn =  line.named['size'] # size name
         item_size = sizes_string_to_7_array(sn)
         item_result['size'] = item_size
-    item_result['description'] = desc
+    item_result['description'] = desc.replace("_", "")#.replace("\n", "<br />")
     item_result['name'] = item['title']
-    item_result['price'] = int(item['price']['amount']) / 100
+    item_result['price'] = int(item['price']['amount']) // 100
     item_result['img'] = item['thumb_photo']
-    item_result['url'] = 'https://vk.com/market{shop}?w=product{shop}_{item}'.format(**{"shop": romashkino_id, "item": item['id']} )
+    item_result['url'] = 'https://vk.com/market{shop}?w=product{shop}_{item}/query'.format(**{"shop": romashkino_id, "item": item['id']} )
     item_result['shop'] = 'РОМАШКИНО'
     items.append(item_result)
 
@@ -76,20 +76,19 @@ for item_got in items_got:
     if size is None:
         continue
     items.append({
-        "description": item_got["description"],
+        "description": item_got["description"],#.replace("\n", "<br />"),
         "name": item_got["title"],
-        "price": int(item_got["price"]["amount"]) / 100,
+        "price": int(item_got["price"]["amount"]) // 100,
         "img": item_got["thumb_photo"],
         "size": sizes_string_to_7_array(size.named['size']),
         "shop": "Костров",
-        "url": "https://vk.com/market{shop}?w=product{shop}_{item}".format(**{"shop": kostrov_id, "item": item['id']} )
+        "url": "https://vk.com/market{shop}?w=product{shop}_{item}/query".format(**{"shop": kostrov_id, "item": item['id']} )
     })
 
 OUR_URL = "http://192.168.43.76:8080/" # uploading to our server
 print("reached sending")
 print(len(items))
-import sys
-sys.exit()
+
 for item in items:
     r = requests.post(OUR_URL + "items",
                       json = item,

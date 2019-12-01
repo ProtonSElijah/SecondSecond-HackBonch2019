@@ -2,7 +2,7 @@ import requests
 import parse
 import re
 
-token = "606fa1164d16e379c7610e48c15f9cb73ebb75215c67f0630959b877ab98748b0fde0d38853f233df5c93"
+token = "1d8bb5cdc38801197879cc1f659516bbbaf0c01b771800b86b1ab1d2a19be906c5e5f980c06a522eff3a6"
 API_URL = "https://api.vk.com/method/"
 v = "5.103"
 
@@ -57,7 +57,7 @@ for item in resp["items"]:
     item_result['name'] = item['title']
     item_result['price'] = int(item['price']['amount']) // 100
     item_result['img'] = item['thumb_photo']
-    item_result['url'] = 'https://vk.com/market{shop}?w=product{shop}_{item}/query'.format(**{"shop": romashkino_id, "item": item['id']} )
+    item_result['url'] = 'https://m.vk.com/product{shop}_{item}'.format(**{"shop": romashkino_id, "item": item['id']} )
     item_result['shop'] = 'РОМАШКИНО'
     items.append(item_result)
 
@@ -82,7 +82,7 @@ for item_got in items_got:
         "img": item_got["thumb_photo"],
         "size": sizes_string_to_7_array(size.named['size']),
         "shop": "Костров",
-        "url": "https://vk.com/market{shop}?w=product{shop}_{item}/query".format(**{"shop": kostrov_id, "item": item['id']} )
+        "url": "https://m.vk.com/product{shop}_{item}".format(**{"shop": kostrov_id, "item": item['id']} )
     })
 
 OUR_URL = "http://192.168.43.76:8080/" # uploading to our server

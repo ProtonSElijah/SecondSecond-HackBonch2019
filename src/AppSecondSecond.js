@@ -48,20 +48,23 @@ const AppSecondSecond = () => {
                 document.body.attributes.setNamedItem(schemeAttribute);
             }
         });
-        function serverRequest() {
-            return fetch("https://192.168.43.76:8080/items", {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            })
-            .then(response => response.json())
-            .then(data => setDataProducts(data));
-        }
-        serverRequest();
+        serverRequest("http://192.168.43.76:8080/items/randomItems?amount=20");
     }, []);
 
+    const serverRequest = (request) => {
+        return fetch(request, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        })
+        .then(response => response.json())
+        .then(data => setDataProducts(data));
+    };
+
     const modalBack = () => {
+        if (activeModal == MODAL_PAGE_FILTER) serverRequest (`http://192.168.43.76:8080/items/priceRange?min_price=${minPriceChange.toString()}&max_price=${maxPriceChange.toString()}`);
+
         setActiveModal(null);
     };
 
@@ -72,6 +75,10 @@ const AppSecondSecond = () => {
     const onChangePrice = e => {
         setMinPriceChange(e[0]);
         setMaxPriceChange(e[1])
+    };
+
+    const gh = e => {
+        console.log(e);
     };
 
     const openModal = e => {
@@ -113,7 +120,7 @@ const AppSecondSecond = () => {
             <Button level="secondary" size="xl"
             component="a" href={urlProductModal}
             >
-            {priceProductModal ? ("Купить за " + priceProductModal) : ""}</Button>
+            {priceProductModal ? ("Купить за " + priceProductModal + " руб.") : ""}</Button>
           </FormLayout>
 
         </ModalPage>
@@ -135,31 +142,27 @@ const AppSecondSecond = () => {
           <FormLayout>
             <RangeSlider onChange={onChangePrice}
                 top={"Ценовой диапазон: " + minPriceChange + " - " + maxPriceChange}
-                min={minPriceChange}
-                max={maxPriceChange}
+                min={0}
+                max={12000}
                 step={1}
                 defaultValue={[0, 12000]}
               />
               <div className="sizeCheckbox">
-                  <Checkbox>XXS</Checkbox>
-                  <Checkbox>XS</Checkbox>
-                  <Checkbox>S</Checkbox>
-                  <Checkbox>M</Checkbox>
+                  <Checkbox name="size" value="XXS" onChange={gh}>XXS</Checkbox>
+                  <Checkbox name="size" value="XS">XS</Checkbox>
+                  <Checkbox name="size" value="S">S</Checkbox>
+                  <Checkbox name="size" value="M">M</Checkbox>
               </div>
                 <div className="sizeCheckbox">
-                  <Checkbox>L</Checkbox>
-                  <Checkbox>XL</Checkbox>
-                  <Checkbox>XXL</Checkbox>
+                  <Checkbox name="size" value="L">L</Checkbox>
+                  <Checkbox name="size" value="XL">XL</Checkbox>
+                  <Checkbox name="size" value="XXL">XXL</Checkbox>
               </div>
           </FormLayout>
 
         </ModalPage>
       </ModalRoot>
     );
-
-    const go = e => {
-        setActivePanel(e.currentTarget.dataset.to);
-    };
 
     return (
         <View activePanel={activePanel} modal={modal}>

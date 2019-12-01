@@ -6,22 +6,31 @@ import HeaderButton from '@vkontakte/vkui/dist/components/HeaderButton/HeaderBut
 import Icon24Filter from '@vkontakte/icons/dist/24/filter';
 /**/
 const Main = ({id, openModal, dataProducts, openFilter}) => {
-    const [searchValue, setSearchValue] = useState("Введите");
+    const [searchValue, setSearchValue] = useState("");
 
     const RefreshSearch = e => {
-        setSearchValue(e.replace(/\s+/g,' '));
+        setSearchValue(e);
+    };
+
+    const products = () => {
+      const search = searchValue.toLowerCase();
+      return dataProducts.filter(({name}) => name.toLowerCase().indexOf(search) > -1);
     };
 
     return (
         <Panel id={id}>
+
             <PanelHeader
-              left={<HeaderButton onClick={openFilter}><Icon24Filter/></HeaderButton>}
-            />
+              left={[<HeaderButton onClick={openFilter}><Icon24Filter/></HeaderButton>]}>
+              SecondSecond
+            </PanelHeader>
+
             <Search value={searchValue} onChange={RefreshSearch}/>
-            <div id="ProductList" className="ProductList">
-                {dataProducts &&
-                    <ProductList data={dataProducts} openModal={openModal}/>}
-            </div>
+                <div id="ProductList" className="ProductList">
+                    {dataProducts &&
+                        <ProductList data={products()} openModal={openModal}/>}
+                </div>
+
         </Panel>
     );
 };

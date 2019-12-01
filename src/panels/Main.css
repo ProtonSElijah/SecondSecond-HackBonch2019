@@ -66,6 +66,7 @@ body {
     font-family: Verdana;
     display: flex;
     text-align: center;
+    overflow-y: scroll;
 
 }
 
@@ -75,8 +76,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: Verdana;
-    font-size: 12vmin;
+    font-family: Clarendon;
+    font-size: 10vmin;
 }
 
 .sizeCheckbox {

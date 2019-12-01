@@ -49,7 +49,7 @@ const AppSecondSecond = () => {
             }
         });
         function serverRequest() {
-            return fetch("https://192.168.43.76:8080/items", {
+            return fetch("http://192.168.43.76:8080/items", {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',

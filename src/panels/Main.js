@@ -4,53 +4,44 @@ import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader
 import Search from '@vkontakte/vkui/dist/components/Search/Search';
 import HeaderButton from '@vkontakte/vkui/dist/components/HeaderButton/HeaderButton';
 import Icon24Filter from '@vkontakte/icons/dist/24/filter';
+import Icon24Search from '@vkontakte/icons/dist/24/search';
 /**/
-const Main = ({id, openModal, dataProducts, openFilter}) => {
-    const [searchValue, setSearchValue] = useState("");
+import Icon24Add from '@vkontakte/icons/dist/24/add';
 
-    const RefreshSearch = e => {
-        setSearchValue(e);
-    };
+import ProductList from '../components/ProductList';
+
+const Main = ({id, openModal, dataProducts, openFilter, dataUpload}) => {
+    const [searchValue, setSearchValue] = useState("");
 
     const products = () => {
       const search = searchValue.toLowerCase();
       return dataProducts.filter(({name}) => name.toLowerCase().indexOf(search) > -1);
     };
 
+    const uploadData = e => {
+        let elem = e.currentTarget;
+        console.log("scrollTop: " + elem.scrollTop);
+        console.log("Граница: " + (elem.scrollHeight - elem.clientHeight*2));
+        if (elem.scrollHeight - elem.clientHeight*2 <= elem.scrollTop) {
+            dataUpload();
+        }
+    };
+
     return (
         <Panel id={id}>
-
             <PanelHeader
-              left={[<HeaderButton onClick={openFilter}><Icon24Filter/></HeaderButton>]}>
+                left={
+                    <HeaderButton key="filter" onClick={openFilter}><Icon24Filter/></HeaderButton>
+                }>
               SecondSecond
             </PanelHeader>
-
-            <Search value={searchValue} onChange={RefreshSearch}/>
-                <div id="ProductList" className="ProductList">
+            <Search value={searchValue} onChange={e => setSearchValue(e)} placeholder="Поиск по названию"/>
+                <div id="ProductList" className="ProductList" onScroll={uploadData}>
                     {dataProducts &&
                         <ProductList data={products()} openModal={openModal}/>}
                 </div>
-
         </Panel>
     );
 };
-
-const ProductList = ({data, openModal}) => {
-    return data.map (
-        product =>
-            <div className="ProductCell"
-               onClick={openModal}
-               data-name={product.name}
-               data-price={product.price}
-               data-img={product.img}
-               data-url={product.url}
-               data-store={product.shop}
-               data-description={product.description}>
-                <img src={product.img ? product.img : null}/>
-                <div className="ProdName">{product.name ? product.name : ""}</div>
-                <div className="ProdPrice">{product.price ? (product.price + " руб.") : ""}</div>
-            </div>
-    );
-}
 
 export default Main;

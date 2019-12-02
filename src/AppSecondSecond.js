@@ -17,6 +17,8 @@ import Icon24Dismiss from '@vkontakte/icons/dist/24/dismiss';
 import Icon24Done from '@vkontakte/icons/dist/24/dismiss';
 
 import Main from './panels/Main';
+import Filters from './modals/Filters';
+import ProductInfo from './modals/ProductInfo';
 
 import '@vkontakte/vkui/dist/vkui.css';
 import './panels/Main.css';
@@ -33,12 +35,17 @@ const AppSecondSecond = () => {
     const [urlProductModal, setUrlProductModal] = useState(null);
 
     const [dataProducts, setDataProducts] = useState(null);
+    const [dataProductsNEW, setDataProductsNEW] = useState(1);
 
     const [minPriceChange, setMinPriceChange] = useState(0);
     const [maxPriceChange, setMaxPriceChange] = useState(12000);
 
     const MODAL_PAGE_PRODUCTINFO = "product-info";
     const MODAL_PAGE_FILTER = "filter";
+
+    const LOCAL_SERVER = "192.168.0.106";
+
+    let count = 6;
 
     useEffect(() => {
         connect.subscribe(({ detail: { type, data }}) => {
@@ -48,7 +55,7 @@ const AppSecondSecond = () => {
                 document.body.attributes.setNamedItem(schemeAttribute);
             }
         });
-        serverRequest("http://192.168.43.76:8080/items/randomItems?amount=20");
+        serverRequest(`http://${LOCAL_SERVER}:8080/items/randomItems?amount=20`);
     }, []);
 
     const serverRequest = (request) => {
@@ -62,8 +69,13 @@ const AppSecondSecond = () => {
         .then(data => setDataProducts(data));
     };
 
+    const dataUpload = () => {
+        serverRequest(`http://${LOCAL_SERVER}:8080/items/randomItems?amount=${20*count}`);
+
+    }
+
     const modalBack = () => {
-        if (activeModal == MODAL_PAGE_FILTER) serverRequest (`http://192.168.43.76:8080/items/priceRange?min_price=${minPriceChange.toString()}&max_price=${maxPriceChange.toString()}`);
+        if (activeModal == MODAL_PAGE_FILTER) serverRequest (`http://${LOCAL_SERVER}:8080/items/priceRange?min_price=${minPriceChange.toString()}&max_price=${maxPriceChange.toString()}`);
 
         setActiveModal(null);
     };
@@ -74,11 +86,7 @@ const AppSecondSecond = () => {
 
     const onChangePrice = e => {
         setMinPriceChange(e[0]);
-        setMaxPriceChange(e[1])
-    };
-
-    const gh = e => {
-        console.log(e);
+        setMaxPriceChange(e[1]);
     };
 
     const openModal = e => {
@@ -93,80 +101,30 @@ const AppSecondSecond = () => {
 
     const modal = (
       <ModalRoot activeModal={activeModal}>
-        <ModalPage
-          id={MODAL_PAGE_PRODUCTINFO}
-          header={
-            <ModalPageHeader
-              left={IS_PLATFORM_ANDROID && <HeaderButton onClick={modalBack}><Icon24Cancel /></HeaderButton>}
-              right={IS_PLATFORM_IOS && <HeaderButton onClick={modalBack}><Icon24Dismiss /></HeaderButton>}
-            >
-              {nameProductModal ? nameProductModal : ""}
-            </ModalPageHeader>
-          }
-          onClose={modalBack}
-          settlingHeight={300}
-        >
-         <div className="ModalProduct">
-            <img src={imgProductModal}/>
-            <div className="ModalProductDescription">
-                {descriptionProductModal}
-            </div>
-            <div className="ModalStore">
-                {storeProductModal}
-            </div>
-         </div>
+       <ProductInfo
+           modalBack={modalBack}
+           name={nameProductModal}
+           img={imgProductModal}
+           description={descriptionProductModal}
+           store={storeProductModal}
+           url={urlProductModal}
+           price={priceProductModal}
+           id={MODAL_PAGE_PRODUCTINFO}
+       />
 
-          <FormLayout>
-            <Button level="secondary" size="xl"
-            component="a" href={urlProductModal}
-            >
-            {priceProductModal ? ("Купить за " + priceProductModal + " руб.") : ""}</Button>
-          </FormLayout>
-
-        </ModalPage>
-
-
-        <ModalPage
-          id={MODAL_PAGE_FILTER}
-          header={
-            <ModalPageHeader
-              left={IS_PLATFORM_ANDROID && <HeaderButton onClick={modalBack}><Icon24Cancel /></HeaderButton>}
-              right={<HeaderButton onClick={modalBack}>{IS_PLATFORM_IOS ? 'Готово' : <Icon24Done />}</HeaderButton>}>
-              Критерии поиска
-            </ModalPageHeader>
-          }
-          onClose={modalBack}
-          settlingHeight={300}
-        >
-
-          <FormLayout>
-            <RangeSlider onChange={onChangePrice}
-                top={"Ценовой диапазон: " + minPriceChange + " - " + maxPriceChange}
-                min={0}
-                max={12000}
-                step={1}
-                defaultValue={[0, 12000]}
-              />
-              <div className="sizeCheckbox">
-                  <Checkbox name="size" value="XXS" onChange={gh}>XXS</Checkbox>
-                  <Checkbox name="size" value="XS">XS</Checkbox>
-                  <Checkbox name="size" value="S">S</Checkbox>
-                  <Checkbox name="size" value="M">M</Checkbox>
-              </div>
-                <div className="sizeCheckbox">
-                  <Checkbox name="size" value="L">L</Checkbox>
-                  <Checkbox name="size" value="XL">XL</Checkbox>
-                  <Checkbox name="size" value="XXL">XXL</Checkbox>
-              </div>
-          </FormLayout>
-
-        </ModalPage>
+        <Filters
+            modalBack={modalBack}
+            onChangePrice={onChangePrice}
+            minPriceChange={minPriceChange}
+            maxPriceChange={maxPriceChange}
+            id={MODAL_PAGE_FILTER}
+        />
       </ModalRoot>
     );
 
     return (
         <View activePanel={activePanel} modal={modal}>
-            <Main id='main' openModal={openModal} dataProducts={dataProducts} openFilter={openFilter}/>
+            <Main id='main' openModal={openModal} dataProducts={dataProducts} openFilter={openFilter} dataUpload={dataUpload}/>
         </View>
     );
 }

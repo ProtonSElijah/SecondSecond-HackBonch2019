@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { IS_PLATFORM_ANDROID, IS_PLATFORM_IOS } from '@vkontakte/vkui/dist/lib/platform';
 import ModalPage from '@vkontakte/vkui/dist/components/ModalPage/ModalPage';
 import ModalPageHeader from '@vkontakte/vkui/dist/components/ModalPageHeader/ModalPageHeader';
@@ -13,17 +13,15 @@ import Icon24Done from '@vkontakte/icons/dist/24/dismiss';
 const Filters = ({modalBack, onChangePrice, minPriceChange, maxPriceChange, id}) => (
         <ModalPage
           id={id}
+          onClose={modalBack}
+          settlingHeight={300}
           header={
             <ModalPageHeader
               left={IS_PLATFORM_ANDROID && <HeaderButton onClick={modalBack}><Icon24Cancel /></HeaderButton>}
               right={<HeaderButton onClick={modalBack}>{IS_PLATFORM_IOS ? 'Готово' : <Icon24Done />}</HeaderButton>}>
               Критерии поиска
             </ModalPageHeader>
-          }
-          onClose={modalBack}
-          settlingHeight={300}
-        >
-
+          }>
           <FormLayout>
             <RangeSlider onChange={onChangePrice}
                 top={"Ценовой диапазон: " + minPriceChange + " - " + maxPriceChange}

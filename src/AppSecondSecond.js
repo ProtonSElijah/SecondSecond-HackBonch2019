@@ -1,20 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import connect from '@vkontakte/vk-connect';
 import View from '@vkontakte/vkui/dist/components/View/View';
-import { IS_PLATFORM_ANDROID, IS_PLATFORM_IOS } from '@vkontakte/vkui/dist/lib/platform';
 import ModalRoot from '@vkontakte/vkui/dist/components/ModalRoot/ModalRoot';
-import ModalPage from '@vkontakte/vkui/dist/components/ModalPage/ModalPage';
-import ModalPageHeader from '@vkontakte/vkui/dist/components/ModalPageHeader/ModalPageHeader';
-import HeaderButton from '@vkontakte/vkui/dist/components/HeaderButton/HeaderButton';
-import FormLayout from '@vkontakte/vkui/dist/components/FormLayout/FormLayout';
-import FormLayoutGroup from '@vkontakte/vkui/dist/components/FormLayoutGroup/FormLayoutGroup';
-import Button from '@vkontakte/vkui/dist/components/Button/Button';
-import Link from '@vkontakte/vkui/dist/components/Link/Link';
-import Checkbox from '@vkontakte/vkui/dist/components/Checkbox/Checkbox';
-import RangeSlider from '@vkontakte/vkui/dist/components/RangeSlider/RangeSlider';
-import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
-import Icon24Dismiss from '@vkontakte/icons/dist/24/dismiss';
-import Icon24Done from '@vkontakte/icons/dist/24/dismiss';
 
 import Main from './panels/Main';
 import Filters from './modals/Filters';
@@ -35,7 +22,6 @@ const AppSecondSecond = () => {
     const [urlProductModal, setUrlProductModal] = useState(null);
 
     const [dataProducts, setDataProducts] = useState(null);
-    const [dataProductsNEW, setDataProductsNEW] = useState(1);
 
     const [minPriceChange, setMinPriceChange] = useState(0);
     const [maxPriceChange, setMaxPriceChange] = useState(12000);
@@ -44,8 +30,6 @@ const AppSecondSecond = () => {
     const MODAL_PAGE_FILTER = "filter";
 
     const LOCAL_SERVER = "192.168.0.106";
-
-    let count = 6;
 
     useEffect(() => {
         connect.subscribe(({ detail: { type, data }}) => {
@@ -70,9 +54,16 @@ const AppSecondSecond = () => {
     };
 
     const dataUpload = () => {
-        serverRequest(`http://${LOCAL_SERVER}:8080/items/randomItems?amount=${20*count}`);
-
-    }
+        let a = dataProducts;
+        fetch(`http://${LOCAL_SERVER}:8080/items/randomItems?amount=20`, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        })
+        .then(response => response.json())
+        .then(data => setDataProducts(a.concat(data)));
+    };
 
     const modalBack = () => {
         if (activeModal == MODAL_PAGE_FILTER) serverRequest (`http://${LOCAL_SERVER}:8080/items/priceRange?min_price=${minPriceChange.toString()}&max_price=${maxPriceChange.toString()}`);

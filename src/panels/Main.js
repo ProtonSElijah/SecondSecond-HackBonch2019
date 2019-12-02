@@ -4,9 +4,6 @@ import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader
 import Search from '@vkontakte/vkui/dist/components/Search/Search';
 import HeaderButton from '@vkontakte/vkui/dist/components/HeaderButton/HeaderButton';
 import Icon24Filter from '@vkontakte/icons/dist/24/filter';
-import Icon24Search from '@vkontakte/icons/dist/24/search';
-/**/
-import Icon24Add from '@vkontakte/icons/dist/24/add';
 
 import ProductList from '../components/ProductList';
 

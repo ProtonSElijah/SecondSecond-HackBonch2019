@@ -50,9 +50,12 @@ const AppSecondSecond = () => {
 
     const SIZES_LIST = ["XXS", "XS", "S", "M", "L", "XL", "XXL"];
     const [sizes, setSizes] = useState(SIZES_LIST.slice());
-
     const [stores, setStores] = useState(["Ромашкино", "Костров"]);
+
+    //стартовые константы, которые нужно загружать
     const [STORE_LIST, setSTORE_LIST] = useState(["Ромашкино", "Костров"]);
+    const [MIN_PRICE, setMIN_PRICE] = useState(0);
+    const [MAX_PRICE, setMAX_PRICE] = useState(12000);
 
     const LOCAL_SERVER = "192.168.0.106";
 
@@ -165,7 +168,9 @@ const AppSecondSecond = () => {
            toSize={toSize}
            toStores={toStores}
            sizes={sizes}
-           stores={stores}/>
+           stores={stores}
+           MIN_PRICE={MIN_PRICE}
+           MAX_PRICE={MAX_PRICE}/>
        <Size
            id={MODAL_PAGE_SIZE}
            onClose={toFilter}

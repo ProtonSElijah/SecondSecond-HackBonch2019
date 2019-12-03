@@ -116,7 +116,11 @@ const AppSecondSecond = () => {
 
     //Переключатели между модальными окнами
     const toSize = e => {setActiveModal(MODAL_PAGE_SIZE)};
-    const toFilter = e => {setActiveModal(MODAL_PAGE_FILTER)};
+    const toFilter = e => {
+        if (sizes.length == 0) {setSizes(SIZES_LIST)}
+        if (stores.length == 0) {setStores(STORE_LIST)}
+        setActiveModal(MODAL_PAGE_FILTER);
+    };
     const toStores = e => {setActiveModal(MODAL_PAGE_STORES)};
 
     //Переключатель магазинов
@@ -139,6 +143,21 @@ const AppSecondSecond = () => {
             if (s.indexOf(size) != -1) newS.push(size);
         });
         setSizes(newS);
+    };
+
+    //Добавить / очистить все
+    const refreshList = e => {
+        let list = e.currentTarget.dataset.list;
+        if (list == MODAL_PAGE_SIZE) {
+            if (sizes.length == 0) {
+                setSizes(SIZES_LIST);
+            } else setSizes(sizes.splice(sizes.length));
+        }
+        else if (list == MODAL_PAGE_STORES) {
+            if (stores.length == 0) {
+                setStores(STORE_LIST);
+            } else setStores(stores.splice(stores.length));
+        }
     };
 
 
@@ -177,7 +196,8 @@ const AppSecondSecond = () => {
            toggleSizes={toggleSizes}
            sizes={sizes}
            SIZES_LIST={SIZES_LIST}
-           onClick={toFilter}/>
+           onClick={toFilter}
+           refreshList={refreshList}/>
         <Stores
             id={MODAL_PAGE_STORES}
             onClose={toFilter}
@@ -185,7 +205,7 @@ const AppSecondSecond = () => {
             toggleStores={toggleStores}
             stores={stores}
             STORE_LIST={STORE_LIST}
-        />
+            refreshList={refreshList}/>
       </ModalRoot>
     );
 

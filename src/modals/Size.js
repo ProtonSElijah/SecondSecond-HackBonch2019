@@ -7,12 +7,13 @@ import FormLayout from '@vkontakte/vkui/dist/components/FormLayout/FormLayout';
 import Group from '@vkontakte/vkui/dist/components/Group/Group';
 import List from '@vkontakte/vkui/dist/components/List/List';
 import Cell from '@vkontakte/vkui/dist/components/Cell/Cell';
+import Button from '@vkontakte/vkui/dist/components/Button/Button';
 
 import Icon24Done from '@vkontakte/icons/dist/24/done';
 import { IS_PLATFORM_ANDROID, IS_PLATFORM_IOS } from '@vkontakte/vkui/dist/lib/platform';
 
 
-const Size = ({id, onClose, onClick, toggleSizes, sizes, SIZES_LIST}) => (
+const Size = ({id, onClose, onClick, toggleSizes, sizes, SIZES_LIST, refreshList}) => (
     <ModalPage
           id={id}
           onClose={onClose}
@@ -24,6 +25,7 @@ const Size = ({id, onClose, onClick, toggleSizes, sizes, SIZES_LIST}) => (
             </ModalPageHeader>
           }>
             <FormLayout>
+               <Button level="secondary" size="xl" data-list={id} onClick={refreshList}>Добавить / очистить все</Button>
                 <Group>
                     <List>
                         {SIZES_LIST.map( size =>

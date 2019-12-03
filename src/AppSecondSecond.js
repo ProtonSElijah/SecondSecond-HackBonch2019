@@ -22,6 +22,7 @@ import Main from './panels/Main';
 import ProductInfo from './modals/ProductInfo';
 import Filters from './modals/Filters';
 import Size from './modals/Size';
+import Stores from './modals/Stores';
 
 import '@vkontakte/vkui/dist/vkui.css';
 import './panels/Main.css';
@@ -45,10 +46,13 @@ const AppSecondSecond = () => {
     const MODAL_PAGE_PRODUCTINFO = "product-info";
     const MODAL_PAGE_FILTER = "filter";
     const MODAL_PAGE_SIZE = "size";
-    const MODAL_PAGE_STORE = "store";
+    const MODAL_PAGE_STORES = "stores";
 
     const SIZES_LIST = ["XXS", "XS", "S", "M", "L", "XL", "XXL"];
     const [sizes, setSizes] = useState(SIZES_LIST.slice());
+
+    const [stores, setStores] = useState(["Ромашкино", "Костров"]);
+    const [STORE_LIST, setSTORE_LIST] = useState(["Ромашкино", "Костров"]);
 
     const LOCAL_SERVER = "192.168.0.106";
 
@@ -107,22 +111,33 @@ const AppSecondSecond = () => {
         setActiveModal(MODAL_PAGE_PRODUCTINFO);
     };
 
+    //Переключатели между модальными окнами
     const toSize = e => {setActiveModal(MODAL_PAGE_SIZE)};
     const toFilter = e => {setActiveModal(MODAL_PAGE_FILTER)};
+    const toStores = e => {setActiveModal(MODAL_PAGE_STORES)};
 
+    //Переключатель магазинов
+    const toggleStores = e => {
+        let s = stores.slice();
+        if (s.indexOf(e.currentTarget.dataset.store) != -1)
+            s.splice(s.indexOf(e.currentTarget.dataset.store), 1);
+        else s.push(e.currentTarget.dataset.store);
+        setStores(s);
+    };
+
+    //Переключатель размеров и сортировщик
     const toggleSizes = e => {
         let s = sizes.slice();
-        //Удаление и добавление размера из массива
         if (s.indexOf(e.currentTarget.dataset.size) != -1)
             s.splice(s.indexOf(e.currentTarget.dataset.size), 1);
         else s.push(e.currentTarget.dataset.size);
-        //Сортировка массива размеров
         let newS = [];
         SIZES_LIST.forEach(function(size) {
             if (s.indexOf(size) != -1) newS.push(size);
         });
         setSizes(newS);
     };
+
 
     //Коллекция модальных окон
     //ProductInfo - окно продукта
@@ -148,7 +163,9 @@ const AppSecondSecond = () => {
            minPriceChange={minPriceChange}
            maxPriceChange={maxPriceChange}
            toSize={toSize}
-           sizes={sizes}/>
+           toStores={toStores}
+           sizes={sizes}
+           stores={stores}/>
        <Size
            id={MODAL_PAGE_SIZE}
            onClose={toFilter}
@@ -156,9 +173,19 @@ const AppSecondSecond = () => {
            sizes={sizes}
            SIZES_LIST={SIZES_LIST}
            onClick={toFilter}/>
+        <Stores
+            id={MODAL_PAGE_STORES}
+            onClose={toFilter}
+            onClick={toFilter}
+            toggleStores={toggleStores}
+            stores={stores}
+            STORE_LIST={STORE_LIST}
+        />
       </ModalRoot>
     );
 
+    //Коллекция панелей
+    //Main - главный экран
     return (
         <View activePanel={activePanel} modal={modal}>
             <Main

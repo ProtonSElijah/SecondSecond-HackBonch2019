@@ -12,7 +12,7 @@ import Icon24Done from '@vkontakte/icons/dist/24/dismiss';
 import Select from '@vkontakte/vkui/dist/components/Select/Select';
 
 
-const Filters = ({id, onClose, onClick, onChangePrice, minPriceChange, maxPriceChange, toSize, sizes}) => (
+const Filters = ({id, onClose, onClick, onChangePrice, minPriceChange, maxPriceChange, toSize, sizes, toStores, stores}) => (
     <ModalPage
       id={id}
       onClose={onClose}
@@ -37,8 +37,8 @@ const Filters = ({id, onClose, onClick, onChangePrice, minPriceChange, maxPriceC
                 </SelectMimicry>
                 <SelectMimicry
                   top="Выберите магазины"
-                  placeholder={sizes.toString()}
-                  onClick={toSize}>
+                  placeholder={"Выбрано " + stores.length}
+                  onClick={toStores}>
                 </SelectMimicry>
           </FormLayout>
 

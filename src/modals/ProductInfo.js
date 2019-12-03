@@ -12,15 +12,15 @@ import Icon24Dismiss from '@vkontakte/icons/dist/24/dismiss';
 const ProductInfo = ({modalBack, name, img, description, store, url, price, id}) => (
     <ModalPage
           id={id}
+          onClose={modalBack}
+          settlingHeight={300}
           header={
             <ModalPageHeader
               left={IS_PLATFORM_ANDROID && <HeaderButton onClick={modalBack}><Icon24Cancel /></HeaderButton>}
               right={IS_PLATFORM_IOS && <HeaderButton onClick={modalBack}><Icon24Dismiss /></HeaderButton>}>
               {name ? name : ""}
             </ModalPageHeader>
-          }
-          onClose={modalBack}
-          settlingHeight={300}>
+          }>
          <div className="ModalProduct">
             <img src={img}/>
             <div className="ModalProductDescription">{description}</div>

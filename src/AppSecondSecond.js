@@ -66,13 +66,14 @@ const AppSecondSecond = () => {
     };
 
     const modalBack = () => {
+        console.log(activeModal);
         if (activeModal == MODAL_PAGE_FILTER) serverRequest (`http://${LOCAL_SERVER}:8080/items/priceRange?min_price=${minPriceChange.toString()}&max_price=${maxPriceChange.toString()}`);
-
         setActiveModal(null);
     };
 
     const openFilter = () => {
         setActiveModal(MODAL_PAGE_FILTER);
+        console.log(activeModal);
     };
 
     const onChangePrice = e => {
@@ -93,29 +94,33 @@ const AppSecondSecond = () => {
     const modal = (
       <ModalRoot activeModal={activeModal}>
        <ProductInfo
-           modalBack={modalBack}
-           name={nameProductModal}
-           img={imgProductModal}
-           description={descriptionProductModal}
-           store={storeProductModal}
-           url={urlProductModal}
-           price={priceProductModal}
-           id={MODAL_PAGE_PRODUCTINFO}
-       />
-
+            onClose={modalBack}
+            modalBack={modalBack}
+            name={nameProductModal}
+            img={imgProductModal}
+            description={descriptionProductModal}
+            store={storeProductModal}
+            url={urlProductModal}
+            price={priceProductModal}
+            id={MODAL_PAGE_PRODUCTINFO}/>
         <Filters
+            onClose={modalBack}
             modalBack={modalBack}
             onChangePrice={onChangePrice}
             minPriceChange={minPriceChange}
             maxPriceChange={maxPriceChange}
-            id={MODAL_PAGE_FILTER}
-        />
+            id={MODAL_PAGE_FILTER}/>
       </ModalRoot>
     );
 
     return (
         <View activePanel={activePanel} modal={modal}>
-            <Main id='main' openModal={openModal} dataProducts={dataProducts} openFilter={openFilter} dataUpload={dataUpload}/>
+            <Main
+                id='main'
+                openModal={openModal}
+                dataProducts={dataProducts}
+                openFilter={openFilter}
+                dataUpload={dataUpload}/>
         </View>
     );
 }

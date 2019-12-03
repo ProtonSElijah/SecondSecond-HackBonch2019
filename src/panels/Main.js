@@ -32,7 +32,7 @@ const Main = ({id, openModal, dataProducts, openFilter, dataUpload}) => {
                 }>
               SecondSecond
             </PanelHeader>
-            <Search value={searchValue} onChange={e => setSearchValue(e)} placeholder="Поиск по названию"/>
+            <Search value={searchValue} onChange={e => setSearchValue(e)} placeholder="Поиск по названию и категории"/>
                 <div id="ProductList" className="ProductList" onScroll={uploadData}>
                     {dataProducts &&
                         <ProductList data={products()} openModal={openModal}/>}

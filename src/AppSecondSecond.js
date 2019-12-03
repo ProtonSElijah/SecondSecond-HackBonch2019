@@ -51,6 +51,7 @@ const AppSecondSecond = () => {
     const SIZES_LIST = ["XXS", "XS", "S", "M", "L", "XL", "XXL"];
     const [sizes, setSizes] = useState(SIZES_LIST.slice());
     const [stores, setStores] = useState(["Ромашкино", "Костров"]);
+    const [toPrice, setToPrice] = useState("");
 
     //стартовые константы, которые нужно загружать
     const [STORE_LIST, setSTORE_LIST] = useState(["Ромашкино", "Костров"]);
@@ -98,10 +99,14 @@ const AppSecondSecond = () => {
         setActiveModal(null);
     };
 
+    //Диапазон цен
     const onChangePrice = e => {
         setMinPriceChange(e[0]);
         setMaxPriceChange(e[1]);
     };
+
+    //Сортировка по цене
+    const toggleToPrice = e => {setToPrice(e.currentTarget.value);};
 
     //Открытие модального окна продукта и установка его свойств
     const toProduct = e => {
@@ -189,7 +194,8 @@ const AppSecondSecond = () => {
            sizes={sizes}
            stores={stores}
            MIN_PRICE={MIN_PRICE}
-           MAX_PRICE={MAX_PRICE}/>
+           MAX_PRICE={MAX_PRICE}
+           toggleToPric={toggleToPrice}/>
        <Size
            id={MODAL_PAGE_SIZE}
            onClose={toFilter}

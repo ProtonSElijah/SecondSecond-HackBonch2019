@@ -12,7 +12,7 @@ import Icon24Done from '@vkontakte/icons/dist/24/dismiss';
 import Select from '@vkontakte/vkui/dist/components/Select/Select';
 
 
-const Filters = ({id, onClose, onClick, onChangePrice, minPriceChange, maxPriceChange, toSize, sizes, toStores, stores, MIN_PRICE, MAX_PRICE}) => {
+const Filters = ({id, onClose, onClick, onChangePrice, minPriceChange, maxPriceChange, toSize, sizes, toStores, stores, MIN_PRICE, MAX_PRICE, toggleToPrice}) => {
     const[minPriceDynamic, setMinPriceDynamic] = useState(null);
     const[maxPriceDynamic, setMaxPriceDynamic] = useState(null);
 
@@ -33,6 +33,11 @@ const Filters = ({id, onClose, onClick, onChangePrice, minPriceChange, maxPriceC
             </ModalPageHeader>
           }>
           <FormLayout>
+               <Select top="Сортировать по цене" placeholder="Выберите сортировку" onChange={toggleToPrice}>
+                    <option value="toUp">По возрастанию цены</option>
+                    <option value="toDown">По убыванию цены</option>
+                    <option value="toNone">Убрать сортировку по цене</option>
+                </Select>
                 <RangeSlider onChange={onChangePrice}
                     top={"Ценовой диапазон: " + minPriceChange + " - " + maxPriceChange}
                     min={MIN_PRICE}

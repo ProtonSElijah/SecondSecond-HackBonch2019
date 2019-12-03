@@ -79,10 +79,3 @@ body {
     font-family: Clarendon;
     font-size: 10vmin;
 }
-
-.sizeCheckbox {
-    width: 100vmin;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}

@@ -12,21 +12,18 @@ import Icon24Done from '@vkontakte/icons/dist/24/dismiss';
 import Select from '@vkontakte/vkui/dist/components/Select/Select';
 
 
-const Filters = ({modalBack, onChangePrice, minPriceChange, maxPriceChange, id}) => {
-    const [sizes, setSizes] = useState(["XXS", "XS", "S", "M", "L", "XL", "XXL"]);
-
-    return (
-        <ModalPage
-          id={id}
-          onClose={modalBack}
-          settlingHeight={300}
-          header={
-            <ModalPageHeader
-              right={<HeaderButton onClick={modalBack}>{IS_PLATFORM_IOS ? 'Готово' : <Icon24Done />}</HeaderButton>}>
-              Критерии поиска
-            </ModalPageHeader>
-          }>
-          <FormLayout>
+const Filters = ({id, onClose, onClick, onChangePrice, minPriceChange, maxPriceChange, toSize, sizes}) => (
+    <ModalPage
+      id={id}
+      onClose={onClose}
+      settlingHeight={300}
+      header={
+        <ModalPageHeader
+          right={<HeaderButton onClick={onClick}>{IS_PLATFORM_IOS ? 'Готово' : <Icon24Done />}</HeaderButton>}>
+          Критерии поиска
+        </ModalPageHeader>
+      }>
+      <FormLayout>
             <RangeSlider onChange={onChangePrice}
                 top={"Ценовой диапазон: " + minPriceChange + " - " + maxPriceChange}
                 min={0}
@@ -35,14 +32,17 @@ const Filters = ({modalBack, onChangePrice, minPriceChange, maxPriceChange, id})
                 defaultValue={[0, 12000]}/>
               <SelectMimicry
                   top="Выберите размеры"
-                  placeholder="Не выбрана"
-                  onClick={alert("s")}>
-
+                  placeholder={sizes.toString()}
+                  onClick={toSize}>
+                </SelectMimicry>
+                <SelectMimicry
+                  top="Выберите магазины"
+                  placeholder={sizes.toString()}
+                  onClick={toSize}>
                 </SelectMimicry>
           </FormLayout>
 
-        </ModalPage>
-    );
-}
+    </ModalPage>
+);
 
 export default Filters;

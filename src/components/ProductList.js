@@ -1,10 +1,10 @@
 import React from 'react';
 
-const ProductList = ({data, openModal}) => {
+const ProductList = ({data, toProduct}) => {
     return data.map (
         product =>
             <div className="ProductCell"
-               onClick={openModal}
+               onClick={toProduct}
                data-name={product.name}
                data-price={product.price}
                data-img={product.img}

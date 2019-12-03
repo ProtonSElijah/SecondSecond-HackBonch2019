@@ -7,7 +7,7 @@ import Icon24Filter from '@vkontakte/icons/dist/24/filter';
 
 import ProductList from '../components/ProductList';
 
-const Main = ({id, openModal, dataProducts, openFilter, dataUpload}) => {
+const Main = ({id, toProduct, dataProducts, toFilter, dataUpload}) => {
     const [searchValue, setSearchValue] = useState("");
 
     const products = () => {
@@ -28,14 +28,14 @@ const Main = ({id, openModal, dataProducts, openFilter, dataUpload}) => {
         <Panel id={id}>
             <PanelHeader
                 left={
-                    <HeaderButton key="filter" onClick={openFilter}><Icon24Filter/></HeaderButton>
+                    <HeaderButton key="filter" onClick={toFilter}><Icon24Filter/></HeaderButton>
                 }>
               SecondSecond
             </PanelHeader>
             <Search value={searchValue} onChange={e => setSearchValue(e)} placeholder="Поиск по названию и категории"/>
                 <div id="ProductList" className="ProductList" onScroll={uploadData}>
                     {dataProducts &&
-                        <ProductList data={products()} openModal={openModal}/>}
+                        <ProductList data={products()} toProduct={toProduct}/>}
                 </div>
         </Panel>
     );

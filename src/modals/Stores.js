@@ -26,6 +26,7 @@ const Stores = ({id, onClose, onClick, stores, STORE_LIST, toggleStores, refresh
             <FormLayout>
                <Button level="secondary" size="xl" data-list={id} onClick={refreshList}>Добавить / очистить все</Button>
                 <Group>
+                   {stores &&
                     <List>
                         {STORE_LIST.map( store =>
                             <Cell
@@ -36,7 +37,7 @@ const Stores = ({id, onClose, onClick, stores, STORE_LIST, toggleStores, refresh
                                 {store}
                             </Cell>
                         )}
-                    </List>
+                    </List>}
                 </Group>
             </FormLayout>
         </ModalPage>

@@ -12,6 +12,9 @@ import Stores from './modals/Stores';
 import '@vkontakte/vkui/dist/vkui.css';
 import './panels/Main.css';
 
+//Проблема onClose на модальных окнах => не срабатывают функции
+//Проблема первой загрузки данных
+//Проблема счётчика страниц при динамической подгрузке
 const AppSecondSecond = () => {
     const [activePanel, setActivePanel] = useState('main');
     const [activeModal, setActiveModal] = useState(null);
@@ -31,13 +34,13 @@ const AppSecondSecond = () => {
     const MODAL_PAGE_STORES = "stores";
 
     //стартовые константы, которые нужно загружать
-    const [STORE_LIST, setSTORE_LIST] = useState(["Ромашкино", "Костров"]);
+    const [STORE_LIST, setSTORE_LIST] = useState(null);
     const [MIN_PRICE, setMIN_PRICE] = useState(null);
     const [MAX_PRICE, setMAX_PRICE] = useState(null);
 
     const SIZES_LIST = ["XXS", "XS", "S", "M", "L", "XL", "XXL"];
     const [sizes, setSizes] = useState(SIZES_LIST.slice());
-    const [stores, setStores] = useState(["Ромашкино", "Костров"]);
+    const [stores, setStores] = useState([]);
     const [minPriceChange, setMinPriceChange] = useState(0);
     const [maxPriceChange, setMaxPriceChange] = useState(12000);
     const [nameSearch, setNameSearch] = useState("");
@@ -73,7 +76,7 @@ const AppSecondSecond = () => {
         .then(response => response.json())
         .then(data => {
             setMIN_PRICE(data);
-            setMinPriceChange (MIN_PRICE);
+            setMinPriceChange (data);
         });
 
         //Загрузка максимальной цены
@@ -86,7 +89,7 @@ const AppSecondSecond = () => {
         .then(response => response.json())
         .then(data => {
             setMAX_PRICE(data);
-            setMaxPriceChange(MAX_PRICE);
+            setMaxPriceChange(data);
         });
 
         //Загрузка списка магазинов
@@ -98,12 +101,12 @@ const AppSecondSecond = () => {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
-         //   setSTORE_LIST(data);
-       //     setStores(STORE_LIST);
+            setSTORE_LIST(data);
+            setStores(data);
         });
     };
 
+    //Загрузка товаров
     const getProductList = () => {
         return fetch(`http://${LOCAL_SERVER}:8080/items/test/${0}?name=${nameSearch}&sizes=${sizes.toString()}&shops=${stores.toString()}&min_price=${minPriceChange}&max_price=${maxPriceChange}`, {
         method: "GET",

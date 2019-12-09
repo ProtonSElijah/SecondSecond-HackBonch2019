@@ -3,21 +3,6 @@ import connect from '@vkontakte/vk-connect';
 import View from '@vkontakte/vkui/dist/components/View/View';
 import ModalRoot from '@vkontakte/vkui/dist/components/ModalRoot/ModalRoot';
 
-import { IS_PLATFORM_ANDROID, IS_PLATFORM_IOS } from '@vkontakte/vkui/dist/lib/platform';
-import ModalPage from '@vkontakte/vkui/dist/components/ModalPage/ModalPage';
-import ModalPageHeader from '@vkontakte/vkui/dist/components/ModalPageHeader/ModalPageHeader';
-import HeaderButton from '@vkontakte/vkui/dist/components/HeaderButton/HeaderButton';
-import FormLayout from '@vkontakte/vkui/dist/components/FormLayout/FormLayout';
-import Checkbox from '@vkontakte/vkui/dist/components/Checkbox/Checkbox';
-import RangeSlider from '@vkontakte/vkui/dist/components/RangeSlider/RangeSlider';
-import SelectMimicry from '@vkontakte/vkui/dist/components/SelectMimicry/SelectMimicry';
-import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
-import Icon24Done from '@vkontakte/icons/dist/24/dismiss';
-import Select from '@vkontakte/vkui/dist/components/Select/Select';
-import Group from '@vkontakte/vkui/dist/components/Group/Group';
-import List from '@vkontakte/vkui/dist/components/List/List';
-import Cell from '@vkontakte/vkui/dist/components/Cell/Cell';
-
 import Main from './panels/Main';
 import ProductInfo from './modals/ProductInfo';
 import Filters from './modals/Filters';
@@ -40,23 +25,26 @@ const AppSecondSecond = () => {
 
     const [dataProducts, setDataProducts] = useState(null);
 
-    const [minPriceChange, setMinPriceChange] = useState(0);
-    const [maxPriceChange, setMaxPriceChange] = useState(12000);
-
     const MODAL_PAGE_PRODUCTINFO = "product-info";
     const MODAL_PAGE_FILTER = "filter";
     const MODAL_PAGE_SIZE = "size";
     const MODAL_PAGE_STORES = "stores";
 
+    //стартовые константы, которые нужно загружать
+    const [STORE_LIST, setSTORE_LIST] = useState(["Ромашкино", "Костров"]);
+    const [MIN_PRICE, setMIN_PRICE] = useState(null);
+    const [MAX_PRICE, setMAX_PRICE] = useState(null);
+
     const SIZES_LIST = ["XXS", "XS", "S", "M", "L", "XL", "XXL"];
     const [sizes, setSizes] = useState(SIZES_LIST.slice());
     const [stores, setStores] = useState(["Ромашкино", "Костров"]);
-    const [toPrice, setToPrice] = useState("");
+    const [minPriceChange, setMinPriceChange] = useState(0);
+    const [maxPriceChange, setMaxPriceChange] = useState(12000);
+    const [nameSearch, setNameSearch] = useState("");
 
-    //стартовые константы, которые нужно загружать
-    const [STORE_LIST, setSTORE_LIST] = useState(["Ромашкино", "Костров"]);
-    const [MIN_PRICE, setMIN_PRICE] = useState(0);
-    const [MAX_PRICE, setMAX_PRICE] = useState(12000);
+    const [toPrice, setToPrice] = useState("toNone"); // пока не в запросе
+
+    const [textToPrice, setTextToPrice] = useState("Не использовать");
 
     const LOCAL_SERVER = "192.168.0.106";
 
@@ -68,35 +56,78 @@ const AppSecondSecond = () => {
                 document.body.attributes.setNamedItem(schemeAttribute);
             }
         });
-        serverRequest(`http://${LOCAL_SERVER}:8080/items/randomItems?amount=20`);
+        //Загрузка мин. цены, макс. цены, списка магазинов
+        startServerRequest();
+        //Загрузка товаров
+        getProductList();
     }, []);
 
-    const serverRequest = (request) => {
-        return fetch(request, {
+    const startServerRequest = () => {
+        //Загрузка минимальной цены
+        fetch(`http://${LOCAL_SERVER}:8080/items/minPrice`, {
         method: "GET",
         headers: {
             'Content-Type': 'application/json',
         },
         })
         .then(response => response.json())
-        .then(data => setDataProducts(data));
+        .then(data => {
+            setMIN_PRICE(data);
+            setMinPriceChange (MIN_PRICE);
+        });
+
+        //Загрузка максимальной цены
+        fetch(`http://${LOCAL_SERVER}:8080/items/maxPrice`, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        })
+        .then(response => response.json())
+        .then(data => {
+            setMAX_PRICE(data);
+            setMaxPriceChange(MAX_PRICE);
+        });
+
+        //Загрузка списка магазинов
+        fetch(`http://${LOCAL_SERVER}:8080/items/shops`, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+         //   setSTORE_LIST(data);
+       //     setStores(STORE_LIST);
+        });
     };
 
+    const getProductList = () => {
+        return fetch(`http://${LOCAL_SERVER}:8080/items/test/${0}?name=${nameSearch}&sizes=${sizes.toString()}&shops=${stores.toString()}&min_price=${minPriceChange}&max_price=${maxPriceChange}`, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        })
+        .then(response => response.json())
+        .then(data => setDataProducts(data.content));
+    };
+
+    //Динамическая подгрузка товаров
     const dataUpload = () => {
         let a = dataProducts.slice();
-        fetch(`http://${LOCAL_SERVER}:8080/items/randomItems?amount=20`, {
+        fetch(
+            `http://${LOCAL_SERVER}:8080/items/test/${1}?name=${nameSearch}&sizes=${sizes.toString()}&shops=${stores}&min_price=${minPriceChange}&max_price=${maxPriceChange}`
+            , {
         method: "GET",
         headers: {
             'Content-Type': 'application/json',
         },
         })
         .then(response => response.json())
-        .then(data => setDataProducts(a.concat(data)));
-    };
-
-    const modalBack = () => {
-        if (activeModal == MODAL_PAGE_FILTER) serverRequest (`http://${LOCAL_SERVER}:8080/items/priceRange?min_price=${minPriceChange.toString()}&max_price=${maxPriceChange.toString()}`);
-        setActiveModal(null);
+        .then(data => setDataProducts(a.concat(data.content)));
     };
 
     //Диапазон цен
@@ -104,6 +135,12 @@ const AppSecondSecond = () => {
         setMinPriceChange(e[0]);
         setMaxPriceChange(e[1]);
     };
+
+    //Поиск товаров по имени
+    const onChangeNameSearch = e => {
+        setNameSearch(e);
+        getProductList();
+    }
 
     //Сортировка по цене
     const toggleToPrice = e => {setToPrice(e.currentTarget.value);};
@@ -127,6 +164,7 @@ const AppSecondSecond = () => {
         setActiveModal(MODAL_PAGE_FILTER);
     };
     const toStores = e => {setActiveModal(MODAL_PAGE_STORES)};
+    const toMainPanel = e => {setActiveModal(null)};
 
     //Переключатель магазинов
     const toggleStores = e => {
@@ -173,8 +211,8 @@ const AppSecondSecond = () => {
     const modal = (
       <ModalRoot activeModal={activeModal}>
        <ProductInfo
-            onClose={modalBack}
-            modalBack={modalBack}
+            onClose={toMainPanel}
+            toMainPanel={toMainPanel}
             name={nameProductModal}
             img={imgProductModal}
             description={descriptionProductModal}
@@ -184,8 +222,14 @@ const AppSecondSecond = () => {
             id={MODAL_PAGE_PRODUCTINFO}/>
        <Filters
            id={MODAL_PAGE_FILTER}
-           onClose={modalBack}
-           onClick={modalBack}
+           onClose={function() {
+                    getProductList();
+                    setActiveModal(null);
+                }}
+           onClick={function() {
+                   getProductList();
+                    setActiveModal(null);
+           }}
            onChangePrice={onChangePrice}
            minPriceChange={minPriceChange}
            maxPriceChange={maxPriceChange}
@@ -195,7 +239,8 @@ const AppSecondSecond = () => {
            stores={stores}
            MIN_PRICE={MIN_PRICE}
            MAX_PRICE={MAX_PRICE}
-           toggleToPric={toggleToPrice}/>
+           toggleToPric={toggleToPrice}
+           textToPrice={textToPrice}/>
        <Size
            id={MODAL_PAGE_SIZE}
            onClose={toFilter}
@@ -224,7 +269,9 @@ const AppSecondSecond = () => {
                 toProduct={toProduct}
                 dataProducts={dataProducts}
                 toFilter={toFilter}
-                dataUpload={dataUpload}/>
+                dataUpload={dataUpload}
+                onChangeNameSearch={onChangeNameSearch}
+                nameSearch={nameSearch}/>
         </View>
     );
 }

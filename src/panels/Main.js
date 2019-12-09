@@ -7,18 +7,9 @@ import Icon24Filter from '@vkontakte/icons/dist/24/filter';
 
 import ProductList from '../components/ProductList';
 
-const Main = ({id, toProduct, dataProducts, toFilter, dataUpload}) => {
-    const [searchValue, setSearchValue] = useState("");
-
-    const products = () => {
-      const search = searchValue.toLowerCase();
-      return dataProducts.filter(({name}) => name.toLowerCase().indexOf(search) > -1);
-    };
-
+const Main = ({id, toProduct, dataProducts, toFilter, dataUpload, onChangeNameSearch, nameSearch}) => {
     const uploadData = e => {
         let elem = e.currentTarget;
-        console.log("scrollTop: " + elem.scrollTop);
-        console.log("Граница: " + (elem.scrollHeight - elem.clientHeight*2));
         if (elem.scrollHeight - elem.clientHeight*2 <= elem.scrollTop) {
             dataUpload();
         }
@@ -32,10 +23,10 @@ const Main = ({id, toProduct, dataProducts, toFilter, dataUpload}) => {
                 }>
               SecondSecond
             </PanelHeader>
-            <Search value={searchValue} onChange={e => setSearchValue(e)} placeholder="Поиск по названию и категории"/>
+            <Search value={nameSearch} onChange={onChangeNameSearch} placeholder="Поиск по названию и категории"/>
                 <div id="ProductList" className="ProductList" onScroll={uploadData}>
                     {dataProducts &&
-                        <ProductList data={products()} toProduct={toProduct}/>}
+                        <ProductList data={dataProducts} toProduct={toProduct}/>}
                 </div>
         </Panel>
     );

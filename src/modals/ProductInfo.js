@@ -9,15 +9,15 @@ import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
 import Icon24Dismiss from '@vkontakte/icons/dist/24/dismiss';
 
 
-const ProductInfo = ({modalBack, name, img, description, store, url, price, id}) => (
+const ProductInfo = ({toMainPanel, name, img, description, store, url, price, id}) => (
     <ModalPage
           id={id}
-          onClose={modalBack}
+          onClose={toMainPanel}
           settlingHeight={300}
           header={
             <ModalPageHeader
-              left={IS_PLATFORM_ANDROID && <HeaderButton onClick={modalBack}><Icon24Cancel /></HeaderButton>}
-              right={IS_PLATFORM_IOS && <HeaderButton onClick={modalBack}><Icon24Dismiss /></HeaderButton>}>
+              left={IS_PLATFORM_ANDROID && <HeaderButton onClick={toMainPanel}><Icon24Cancel /></HeaderButton>}
+              right={IS_PLATFORM_IOS && <HeaderButton onClick={toMainPanel}><Icon24Dismiss /></HeaderButton>}>
               {name ? name : ""}
             </ModalPageHeader>
           }>

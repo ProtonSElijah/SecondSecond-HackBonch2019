@@ -13,8 +13,10 @@ import '@vkontakte/vkui/dist/vkui.css';
 import './panels/Main.css';
 
 //Проблема onClose на модальных окнах => не срабатывают функции
-//Проблема первой загрузки данных
-//Проблема счётчика страниц при динамической подгрузке
+//Проблема первой загрузки данных => не видит подгружаемые стартовые данные в getProductList в useEffect
+//Проблема счётчика страниц при динамической подгрузке => счётчик не реализован
+//Нужно добавить открытие окна фильтрации по свайпу вверх и закрытие модальных окон по свайпу вниз
+//Нужно добавить кнопку для пожертвований разработчикам
 const AppSecondSecond = () => {
     const [activePanel, setActivePanel] = useState('main');
     const [activeModal, setActiveModal] = useState(null);
@@ -41,8 +43,8 @@ const AppSecondSecond = () => {
     const SIZES_LIST = ["XXS", "XS", "S", "M", "L", "XL", "XXL"];
     const [sizes, setSizes] = useState(SIZES_LIST.slice());
     const [stores, setStores] = useState([]);
-    const [minPriceChange, setMinPriceChange] = useState(0);
-    const [maxPriceChange, setMaxPriceChange] = useState(12000);
+    const [minPriceChange, setMinPriceChange] = useState(null);
+    const [maxPriceChange, setMaxPriceChange] = useState(null);
     const [nameSearch, setNameSearch] = useState("");
 
     const [toPrice, setToPrice] = useState("toNone"); // пока не в запросе
@@ -59,10 +61,7 @@ const AppSecondSecond = () => {
                 document.body.attributes.setNamedItem(schemeAttribute);
             }
         });
-        //Загрузка мин. цены, макс. цены, списка магазинов
         startServerRequest();
-        //Загрузка товаров
-        getProductList();
     }, []);
 
     const startServerRequest = () => {
@@ -74,35 +73,42 @@ const AppSecondSecond = () => {
         },
         })
         .then(response => response.json())
-        .then(data => {
-            setMIN_PRICE(data);
-            setMinPriceChange (data);
-        });
+        .then(data_minPrice => {
+            setMIN_PRICE(data_minPrice);
+            setMinPriceChange (data_minPrice);
+            //Загрузка максимальной цены
+            fetch(`http://${LOCAL_SERVER}:8080/items/maxPrice`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            })
+            .then(response => response.json())
+            .then(data_maxPrice => {
+                    setMAX_PRICE(data_maxPrice);
+                    setMaxPriceChange(data_maxPrice);
+                    //Загрузка списка магазинов
+                fetch(`http://${LOCAL_SERVER}:8080/items/shops`, {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                })
+                .then(response => response.json())
+                .then(data_shops => {
+                    setSTORE_LIST(data_shops);
+                    setStores(data_shops);
 
-        //Загрузка максимальной цены
-        fetch(`http://${LOCAL_SERVER}:8080/items/maxPrice`, {
-        method: "GET",
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        })
-        .then(response => response.json())
-        .then(data => {
-            setMAX_PRICE(data);
-            setMaxPriceChange(data);
-        });
-
-        //Загрузка списка магазинов
-        fetch(`http://${LOCAL_SERVER}:8080/items/shops`, {
-        method: "GET",
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        })
-        .then(response => response.json())
-        .then(data => {
-            setSTORE_LIST(data);
-            setStores(data);
+                    fetch(`http://${LOCAL_SERVER}:8080/items/test/${0}?name=${nameSearch}&sizes=${sizes.toString()}&shops=${data_shops.toString()}&min_price=${data_minPrice}&max_price=${data_maxPrice}`, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    })
+                    .then(response => response.json())
+                    .then(data => setDataProducts(data.content));
+                });
+            });
         });
     };
 

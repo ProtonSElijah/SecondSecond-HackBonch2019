@@ -12,11 +12,9 @@ import Stores from './modals/Stores';
 import '@vkontakte/vkui/dist/vkui.css';
 import './panels/Main.css';
 
-//Проблема onClose на модальных окнах => не срабатывают функции
-//Проблема первой загрузки данных => не видит подгружаемые стартовые данные в getProductList в useEffect
+//Проблема onClose на модальных окнах => не срабатывают функции => onClose запоминает стартовое состояние и не изменяет его
 //Проблема счётчика страниц при динамической подгрузке => счётчик не реализован
-//Нужно добавить открытие окна фильтрации по свайпу вверх и закрытие модальных окон по свайпу вниз
-//Нужно добавить кнопку для пожертвований разработчикам
+//Нужно добавить кнопку для пожертвований разработчикам и реализовать оплату
 const AppSecondSecond = () => {
     const [activePanel, setActivePanel] = useState('main');
     const [activeModal, setActiveModal] = useState(null);
@@ -126,17 +124,22 @@ const AppSecondSecond = () => {
 
     //Динамическая подгрузка товаров
     const dataUpload = () => {
-        let a = dataProducts.slice();
-        fetch(
-            `http://${LOCAL_SERVER}:8080/items/test/${1}?name=${nameSearch}&sizes=${sizes.toString()}&shops=${stores}&min_price=${minPriceChange}&max_price=${maxPriceChange}`
-            , {
-        method: "GET",
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        })
-        .then(response => response.json())
-        .then(data => setDataProducts(a.concat(data.content)));
+        try {
+            let a = dataProducts.slice();
+            fetch(
+                `http://${LOCAL_SERVER}:8080/items/test/${1}?name=${nameSearch}&sizes=${sizes.toString()}&shops=${stores}&min_price=${minPriceChange}&max_price=${maxPriceChange}`
+                , {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            })
+            .then(response => response.json())
+            .then(data => setDataProducts(a.concat(data.content)));
+        }
+        catch (err) {
+            console.log(err);
+        }
     };
 
     //Диапазон цен
